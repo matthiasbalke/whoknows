@@ -1,45 +1,12 @@
-buildscript {
-	ext {
-		springBootVersion = '1.5.2.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+// alle Skripte aus ./gradle.d in sortierter Reihenfolge einbinden
+file('gradle.d').listFiles().sort().each {
+    if (it =~ /.*\.gradle$/) {
+        apply from: relativePath(it)
+    }
 }
 
-apply plugin: 'groovy'
-apply plugin: 'eclipse-wtp'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'war'
-
-version = '0.0.1-local'
-sourceCompatibility = 1.8
-
-repositories {
-	jcenter()
-}
-
-configurations {
-	providedRuntime
-}
-
-dependencies {
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-actuator-docs')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.flywaydb:flyway-core')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.codehaus.groovy:groovy')
-	runtime('org.springframework.boot:spring-boot-devtools')
-	runtime('org.postgresql:postgresql')
-
-	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+allprojects {
+    group = 'com.github.reflectoring.whoknows'
+    def baseVersion = '0.0.1'
+    version = project.getContinuousBuildVersion(baseVersion)
 }
