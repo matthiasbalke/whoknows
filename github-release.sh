@@ -10,7 +10,7 @@ TAG_VERSION=$CIRCLE_TAG
 
 test -f "$ARTIFACT"
 
-~/github-release release \
+github-release release \
   --user matthiasbalke \
   --repo whoknows \
   --tag "$TAG_VERSION" \
@@ -18,7 +18,7 @@ test -f "$ARTIFACT"
   --description "Released on $(date +%Y-%m-%d)" \
   --draft
 
-~/github-release upload \
+github-release upload \
   --user matthiasbalke \
   --repo whoknows \
   --tag "$TAG_VERSION" \
