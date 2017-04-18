@@ -20,3 +20,10 @@ test:
 
    - mkdir -p $CIRCLE_ARTIFACTS/build-artifacts
    - cp -a backend/build/libs/backend-*.war $CIRCLE_ARTIFACTS/build-artifacts/
+
+deployment:
+  release:
+    tag: /[0-9]+\.[0-9]+\.[0-9]+/
+    owner: matthiasbalke
+    commands:
+      - ./github-release.sh
