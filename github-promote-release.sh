@@ -2,13 +2,9 @@
 #set -x
 
 # install github-release tool
-#curl -L -o ~/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
-#tar -C ~ -jxf ~/github-release.tar.bz2
-#export PATH=~/bin/linux/amd64:"$PATH"
-
-#curl -L https://bintray.com/reflectoring/releases/download_file?file_path=harvester-0.2.0.493.jar
-
-export GITHUB_TOKEN="<token here>"
+curl -L -o ~/github-release.tar.bz2 https://github.com/aktau/github-release/releases/download/v0.7.2/linux-amd64-github-release.tar.bz2
+tar -C ~ -jxf ~/github-release.tar.bz2
+export PATH=~/bin/linux/amd64:"$PATH"
 
 USERNAME=matthiasbalke
 REPOSITORY=whoknows
