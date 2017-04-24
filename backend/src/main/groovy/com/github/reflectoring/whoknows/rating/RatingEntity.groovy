@@ -7,7 +7,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "USER_SKILL_RATING")
+@Table(name = "USER_SKILL_RATINGS")
 class RatingEntity {
 
         @Id
