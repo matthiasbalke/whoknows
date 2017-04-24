@@ -15,6 +15,7 @@
 *.iws
 *.iml
 *.ipr
+out
 dataSources
 .ideaDataSources
 
