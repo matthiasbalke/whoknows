@@ -1,11 +1,18 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${version_springBoot}")
+        classpath "org.asciidoctor:asciidoctor-gradle-plugin:${version_asciidoctor_plugin}"
+        classpath "org.ajoberstar:gradle-git:${version_gradle_git}"
     }
 }
 
 apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
+
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.ajoberstar.github-pages'
 
 configurations {
     providedRuntime
@@ -14,8 +21,11 @@ configurations {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-actuator-docs')
+    compile('org.springframework.boot:spring-boot-starter-hateoas')
+
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.flywaydb:flyway-core')
+
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.codehaus.groovy:groovy')
@@ -27,4 +37,59 @@ dependencies {
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+    testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+    testCompile('org.springframework.restdocs:spring-restdocs-core')
+    testCompile('com.jayway.jsonpath:json-path')
 }
+
+bootRepackage {
+    mainClass = 'com.github.reflectoring.whoknows.WhoknowsApplication'
+    executable = true
+}
+
+bootRun {
+    // default application configuration for running application via bootRun in development mode
+    // (in production, these properties are defined in application.properties)
+    jvmArgs '-Xdebug',
+            '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9009',
+            '-Dspring.output.ansi.enabled=ALWAYS',
+            '-Ddebug=true'
+}
+
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+asciidoctor {
+    attributes 'snippets': snippetsDir,
+            'version': version,
+            'date': new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+            'stylesheet': 'themes/github.css'
+    inputs.dir snippetsDir
+    dependsOn test
+    sourceDir 'src/main/asciidoc'
+    outputDir 'build/doc/restapi'
+}
+
+task preparePages() {
+    doLast {
+        copy {
+            from "${project.buildDir}/doc/restapi/html5"
+            into "${project.buildDir}/pages/restapi"
+        }
+    }
+}
+
+preparePages.dependsOn asciidoctor
+
+githubPages {
+    repoUri = 'git@github.com:matthiasbalke/whoknows.git'
+    targetBranch = 'gh-pages'
+    pages {
+        from "${project.buildDir}/pages"
+        into "docs/${baseVersion}"
+    }
+}
+
+publishGhPages.dependsOn preparePages
